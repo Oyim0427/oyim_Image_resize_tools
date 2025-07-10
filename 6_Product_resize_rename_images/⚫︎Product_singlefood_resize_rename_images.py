@@ -244,7 +244,7 @@ for root, dirs, files in os.walk(temp_folder):
                 if keep_original:
                     print(f"出力完了 (元の名前を変更しない): {current_rel_path}")
     else:
-                    print(f"出力完了: {current_rel_path}")
+print(f"出力完了: {current_rel_path}")
                 found = True
                 break
         
