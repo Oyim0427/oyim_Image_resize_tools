@@ -3,6 +3,12 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
+# プロジェクトのルートディレクトリを特定
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# 仮想環境のPythonインタープリタへのパス
+VENV_PYTHON="$PROJECT_ROOT/venv/bin/python"
+
 while true; do
   # ユーザーに画像サイズを入力してもらう
   read -p "画像サイズを入力してください（例: 960）: " image_size
@@ -15,7 +21,7 @@ while true; do
   
   # Python 実行
   echo "😎 1:1比率（${image_size}x${image_size}）に画像をリサイズします..."
-  python3 "$SCRIPT_DIR/1:1_resize_images.py" "$image_size"
+  "$VENV_PYTHON" "$SCRIPT_DIR/1:1_resize_images.py" "$image_size"
   
   if [ $? -eq 0 ]; then
     echo "🥳完了しました。"

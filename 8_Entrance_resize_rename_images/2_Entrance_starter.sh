@@ -3,9 +3,15 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
+# プロジェクトのルートディレクトリを特定
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# 仮想環境のPythonインタープリタへのパス
+VENV_PYTHON="$PROJECT_ROOT/venv/bin/python"
+
 while true; do
-  # Python 実行
-  python3 "$SCRIPT_DIR/Entrance_resize_rename_images.py"
+  # Python 実行 - 使用虚拟环境Python
+  "$VENV_PYTHON" "$SCRIPT_DIR/Entrance_resize_rename_images.py"
   if [ $? -eq 0 ]; then
     echo "🥳完了しました。"
   else

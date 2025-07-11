@@ -171,8 +171,8 @@ for file_path, filename, relative_path in image_files:
         img = Image.open(file_path).convert("RGB")
         print(f"読み込み: {relative_path} ({img.width}x{img.height})")
 
-    # 画像処理実行
-    processed = process_image(img)
+        # 画像処理実行
+        processed = process_image(img)
 
         # 出力先のディレクトリ構造を維持
         rel_dir = os.path.dirname(relative_path)
@@ -182,21 +182,21 @@ for file_path, filename, relative_path in image_files:
         else:
             rel_temp_dir = temp_folder
 
-    if is_product:
-        # Product_で始まる場合は元のファイル名を変更しない（拡張子のみwebpに変更）
-        base_name = os.path.splitext(filename)[0]
-        output_filename = f"{base_name}.webp"
+        if is_product:
+            # Product_で始まる場合は元のファイル名を変更しない（拡張子のみwebpに変更）
+            base_name = os.path.splitext(filename)[0]
+            output_filename = f"{base_name}.webp"
             output_path = os.path.join(rel_temp_dir, output_filename)
-        processed.save(output_path, "WEBP", quality=100, lossless=True)
+            processed.save(output_path, "WEBP", quality=100, lossless=True)
             processed_files[relative_path] = True  # 元のファイル名を保持するフラグ
             print(f"⭕️処理完了 (名前変更しない): {relative_path} -> {os.path.join(os.path.dirname(relative_path), output_filename)} ({processed.width}x{processed.height})")
-    else:
-        # ファイル名から情報を抽出
-        letters, number = extract_info(filename)
-        # 新しいファイル名を生成
-        output_filename = f"Product_{letters}_{number.zfill(4)}.webp"
+        else:
+            # ファイル名から情報を抽出
+            letters, number = extract_info(filename)
+            # 新しいファイル名を生成
+            output_filename = f"Product_{letters}_{number.zfill(4)}.webp"
             output_path = os.path.join(rel_temp_dir, output_filename)
-        processed.save(output_path, "WEBP", quality=100, lossless=True)
+            processed.save(output_path, "WEBP", quality=100, lossless=True)
             processed_files[relative_path] = False  # 元のファイル名を保持しないフラグ
             print(f"⭕️処理完了: {relative_path} -> {os.path.join(os.path.dirname(relative_path), output_filename)} ({processed.width}x{processed.height})")
     except Exception as e:
@@ -211,8 +211,8 @@ for root, dirs, files in os.walk(temp_folder):
     rel_path = os.path.relpath(root, temp_folder) if root != temp_folder else ""
     
     for filename in files:
-    if not filename.lower().endswith(".webp"):
-        continue
+        if not filename.lower().endswith(".webp"):
+            continue
         
         # 現在のファイルの相対パス
         if rel_path == "":
@@ -231,7 +231,7 @@ for root, dirs, files in os.walk(temp_folder):
             full_output_dir = output_folder
         
         dst = os.path.join(full_output_dir, filename)
-    shutil.copy2(src, dst)
+        shutil.copy2(src, dst)
     
         # 対応する元のファイルを検索
         found = False
@@ -243,8 +243,8 @@ for root, dirs, files in os.walk(temp_folder):
             if current_basename.startswith(orig_basename) or orig_basename.startswith(current_basename):
                 if keep_original:
                     print(f"出力完了 (元の名前を変更しない): {current_rel_path}")
-    else:
-print(f"出力完了: {current_rel_path}")
+                else:
+                    print(f"出力完了: {current_rel_path}")
                 found = True
                 break
         
