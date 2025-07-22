@@ -13,7 +13,7 @@ while true; do
   # 会场番号を手動で入力
   read -p "😎会場IDを入力してください（例：1234）: " NUMBER
 
-  # Python 実行 - 使用虚拟环境Python
+  #  仮想環境のPythonインタープリタへのパス
   "$VENV_PYTHON" "$SCRIPT_DIR/Layout_resize_rename_images.py" "$NUMBER" "$SCRIPT_DIR"
   if [ $? -eq 0 ]; then
     echo "🥳完了しました。"

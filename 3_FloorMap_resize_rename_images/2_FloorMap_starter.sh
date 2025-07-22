@@ -11,7 +11,7 @@ while true; do
   # 施設IDを入力
   read -p "😎施設IDを入力してください（例：123）: " FACILITY_ID
 
-  # 使用虚拟环境中的Python执行脚本
+  #  仮想環境のPythonインタープリタへのパス
   "$VENV_PYTHON" "$SCRIPT_DIR/FloorMap_resize_rename_images.py" "$FACILITY_ID"
   if [ $? -eq 0 ]; then
     echo "🥳完了しました。"

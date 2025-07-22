@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import shutil
@@ -110,40 +111,40 @@ for file_path, filename, relative_path in input_files:
     try:
         img = Image.open(file_path).convert("RGB")
 
-    # Access_で始まるファイル名かどうかをチェック
-    is_access = is_access_filename(filename)
+        # Access_で始まるファイル名かどうかをチェック
+        is_access = is_access_filename(filename)
 
-    # 内容エリアを自動トリミング
-    trimmed = trim(img)
-    
-    # アスペクト比を保持してリサイズ
-    w, h = trimmed.size
-    
-    # 全ての画像をアスペクト比を保持したままリサイズ
-    # 980x550の比率を保つように調整
-    target_ratio = target_size[0] / target_size[1]  # 980/550 = 約1.78
-    img_ratio = w / h
-    
-    # 画像のアスペクト比に応じて適切にリサイズ
-    if img_ratio > target_ratio:  # 画像が横長の場合
-        new_w = target_size[0]
-        new_h = int(new_w / img_ratio)
-    else:  # 画像が縦長の場合
-        new_h = target_size[1]
-        new_w = int(new_h * img_ratio)
+        # 内容エリアを自動トリミング
+        trimmed = trim(img)
         
-    # 高さが500~650pxの範囲内の場合は、そのアスペクト比を尊重
-    if 500 <= h <= 650:
+        # アスペクト比を保持してリサイズ
+        w, h = trimmed.size
+        
+        # 全ての画像をアスペクト比を保持したままリサイズ
+        # 980x550の比率を保つように調整
+        target_ratio = target_size[0] / target_size[1]  # 980/550 = 約1.78
+        img_ratio = w / h
+        
+        # 画像のアスペクト比に応じて適切にリサイズ
+        if img_ratio > target_ratio:  # 画像が横長の場合
+            new_w = target_size[0]
+            new_h = int(new_w / img_ratio)
+        else:  # 画像が縦長の場合
+            new_h = target_size[1]
+            new_w = int(new_h * img_ratio)
+            
+        # 高さが500~650pxの範囲内の場合は、そのアスペクト比を尊重
+        if 500 <= h <= 650:
             print(f"画像 {relative_path} の高さは {h}px で、範囲内 (500-650px) です。アスペクト比を保持します。")
-    
-    # リサイズ実行
-    resized = trimmed.resize((new_w, new_h), RESAMPLING_FILTER)
+        
+        # リサイズ実行
+        resized = trimmed.resize((new_w, new_h), RESAMPLING_FILTER)
 
-    # 背景画像を作成し、中央に貼り付け
-    background = Image.new("RGB", target_size, background_color)
-    x = (target_size[0] - new_w) // 2
-    y = (target_size[1] - new_h) // 2
-    background.paste(resized, (x, y))
+        # 背景画像を作成し、中央に貼り付け
+        background = Image.new("RGB", target_size, background_color)
+        x = (target_size[0] - new_w) // 2
+        y = (target_size[1] - new_h) // 2
+        background.paste(resized, (x, y))
 
         # 出力先のディレクトリ構造を維持
         rel_dir = os.path.dirname(relative_path)
@@ -153,17 +154,17 @@ for file_path, filename, relative_path in input_files:
         else:
             rel_temp_dir = temp_folder
 
-    # 処理した画像を一時フォルダに保存（元のファイル名を変更しない）
-    temp_filename = os.path.splitext(filename)[0] + ".webp"
+        # 処理した画像を一時フォルダに保存（元のファイル名を変更しない）
+        temp_filename = os.path.splitext(filename)[0] + ".webp"
         temp_path = os.path.join(rel_temp_dir, temp_filename)
-    background.save(temp_path, "WEBP", quality=100, lossless=True)
-    
-    # ファイル名から施設IDを抽出
-    facility_id = extract_facility_id(filename)
-    facility_id = str(facility_id).zfill(3)  # 施設ID（3桁）
-    
+        background.save(temp_path, "WEBP", quality=100, lossless=True)
+        
+        # ファイル名から施設IDを抽出
+        facility_id = extract_facility_id(filename)
+        facility_id = str(facility_id).zfill(3)  # 施設ID（3桁）
+        
         # 処理したファイル情報を記録
-    if is_access:
+        if is_access:
             keep_original_names[relative_path] = True
             print(f"⭕️トリミング＋リサイズ完了 (名前保持): {relative_path} -> {os.path.join(os.path.dirname(relative_path), temp_filename)}")
         else:
@@ -197,7 +198,7 @@ for root, dirs, files in os.walk(temp_folder):
         if rel_output_dir:
             full_output_dir = os.path.join(output_folder, rel_output_dir)
             os.makedirs(full_output_dir, exist_ok=True)
-    else:
+        else:
             full_output_dir = output_folder
         
         # Access_で始まる場合は元のファイル名を変更しない
@@ -227,7 +228,7 @@ for root, dirs, files in os.walk(temp_folder):
             if orig_basename == current_basename:
                 # 新しいファイル名を生成
                 facility_id = processed_files[orig_path]
-        new_filename = f"Access_{facility_id}_01.webp"
+                new_filename = f"Access_{facility_id}_01.webp"
                 
                 dst = os.path.join(full_output_dir, new_filename)
                 shutil.copy2(src, dst)

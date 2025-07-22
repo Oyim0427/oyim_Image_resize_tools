@@ -169,10 +169,10 @@ def get_new_name(filename):
     if "スクール" in name_for_check and has_projector:
         return prefix + "10.webp"
     
-    if ("コノ字" in name_for_check or "コの字" in name_for_check) and has_projector:
+    if ("コノ字" in name_for_check or "コの字" in name_for_check or "こノ字" in name_for_check or "この字" in name_for_check) and has_projector:
         return prefix + "13.webp"
     
-    if ("T字島型" in name_for_check or "T字島" in name_for_check or "T字島形" in name_for_check) and has_projector:
+    if ("T字島型" in name_for_check or "T字島" in name_for_check or "T字島形" in name_for_check or "T島型" in name_for_check) and has_projector:
         return prefix + "12.webp"
     
     if "シアター" in name_for_check and has_projector:
@@ -182,9 +182,9 @@ def get_new_name(filename):
         return prefix + "11.webp"
     
     # 一般のパターンをチェック
-    if "T字島型" in name_for_check or "T字島" in name_for_check or "T字島形" in name_for_check:
+    if "T字島型" in name_for_check or "T字島" in name_for_check or "T字島形" in name_for_check or "T島型" in name_for_check:
         return prefix + "4.webp"
-    if "コノ字" in name_for_check or "コの字" in name_for_check:
+    if "コノ字" in name_for_check or "コの字" in name_for_check or "こノ字" in name_for_check or "この字" in name_for_check:
         return prefix + "8.webp"
     if "ロノ字" in name_for_check or "ロの字" in name_for_check:
         return prefix + "5.webp"
