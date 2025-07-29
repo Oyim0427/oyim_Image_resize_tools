@@ -122,6 +122,7 @@ def scan_directory(dir_path, relative_path=""):
 print("画像のリサイズとトリミングを開始...")
 processed_files = {}  # 処理したファイルと番号を記録
 keep_original_names = {}  # 元の名前を保持するファイル
+auto_number_counter = 1  # 自動番号付けのカウンター
 
 # 入力フォルダを再帰的にスキャン
 image_files = scan_directory(input_folder)
@@ -133,9 +134,17 @@ for file_path, filename, relative_path in image_files:
 
     # ファイル名から番号を抽出
     number = extract_number(filename)
-    if number is None and not is_facility:
-        print(f"警告: {relative_path} から番号を抽出できませんでした。スキップします。")
-        continue
+    
+    # 番号が見つからない場合、自動的に番号を割り当て
+    if number is None:
+        if is_facility:
+            print(f"警告: {relative_path} はFacility_で始まりますが番号がありません。自動番号を割り当てます。")
+            number = str(auto_number_counter)
+            auto_number_counter += 1
+        else:
+            print(f"警告: {relative_path} から番号を抽出できませんでした。自動番号を割り当てます。")
+            number = str(auto_number_counter)
+            auto_number_counter += 1
 
     try:
         img = Image.open(file_path).convert("RGB")

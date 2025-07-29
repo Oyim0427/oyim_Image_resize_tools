@@ -111,8 +111,6 @@ print(f"{len(image_files)} 個の画像ファイルが見つかりました。")
 for file_path, filename, relative_path in image_files:
     # FloorMap_で始まるファイル名かどうかをチェック
     is_floormap = is_floormap_filename(filename)
-    
-    # ファイル名から階数を抽出して保存
     floor_number = extract_floor_number(filename)
     if floor_number is None and not is_floormap:
         print(f"警告: {relative_path} から階数を抽出できませんでした。スキップします。")
@@ -120,21 +118,20 @@ for file_path, filename, relative_path in image_files:
 
     try:
         img = Image.open(file_path).convert("RGB")
+        # 内容エリアを自動トリミング
+        trimmed = trim(img)
 
-    # 内容エリアを自動トリミング
-    trimmed = trim(img)
+        # 内容エリアをcontent_target_sizeにリサイズ
+        w, h = trimmed.size
+        scale = content_target_size / max(w, h)
+        new_w, new_h = int(w * scale), int(h * scale)
+        trimmed = trimmed.resize((new_w, new_h), RESAMPLING_FILTER)
 
-    # 内容エリアをcontent_target_sizeにリサイズ
-    w, h = trimmed.size
-    scale = content_target_size / max(w, h)
-    new_w, new_h = int(w * scale), int(h * scale)
-    trimmed = trimmed.resize((new_w, new_h), RESAMPLING_FILTER)
-
-    # 背景画像を作成し、中央に貼り付け
-    background = Image.new("RGB", target_size, background_color)
-    x = (target_size[0] - trimmed.width) // 2
-    y = (target_size[1] - trimmed.height) // 2
-    background.paste(trimmed, (x, y))
+        # 背景画像を作成し、中央に貼り付け
+        background = Image.new("RGB", target_size, background_color)
+        x = (target_size[0] - trimmed.width) // 2
+        y = (target_size[1] - trimmed.height) // 2
+        background.paste(trimmed, (x, y))
 
         # 出力先のディレクトリ構造を維持
         rel_dir = os.path.dirname(relative_path)
@@ -144,22 +141,23 @@ for file_path, filename, relative_path in image_files:
         else:
             rel_temp_dir = temp_folder
 
-    # 元のファイル名を維持して拡張子だけwebpに変更
-    base_name = os.path.splitext(filename)[0]
-    temp_filename = f"{base_name}.webp"
+        # 元のファイル名を維持して拡張子だけwebpに変更
+        base_name = os.path.splitext(filename)[0]
+        temp_filename = f"{base_name}.webp"
         temp_path = os.path.join(rel_temp_dir, temp_filename)
-    background.save(temp_path, "WEBP", quality=100, lossless=True)
-    
-    # 処理したファイル情報を記録
-    if is_floormap:
+        background.save(temp_path, "WEBP", quality=100, lossless=True)
+
+        # 処理したファイル情報を記録
+        if is_floormap:
             keep_original_names[relative_path] = True
             print(f"⭕️トリミング＋リサイズ完了 (名前保持): {relative_path} -> {os.path.join(os.path.dirname(relative_path), temp_filename)}")
-    else:
+        else:
             processed_files[relative_path] = floor_number
             print(f"⭕️トリミング＋リサイズ完了: {relative_path} -> {os.path.join(os.path.dirname(relative_path), temp_filename)}")
     except Exception as e:
         print(f"エラー: ファイル {relative_path} の処理中にエラーが発生しました: {e}")
         continue
+
 
 print("全画像のトリミングとリサイズが完了、出力処理へ...")
 
@@ -169,9 +167,9 @@ for root, dirs, files in os.walk(temp_folder):
     rel_path = os.path.relpath(root, temp_folder) if root != temp_folder else ""
     
     for filename in files:
-    if not filename.lower().endswith(".webp"):
-        continue
-    
+        if not filename.lower().endswith(".webp"):
+            continue
+        
         # 現在のファイルの相対パス
         if rel_path == "":
             current_rel_path = filename
@@ -188,7 +186,7 @@ for root, dirs, files in os.walk(temp_folder):
         else:
             full_output_dir = output_folder
     
-    # FloorMap_で始まるファイル名の場合は元の名前を変更しない
+        # FloorMap_で始まるファイル名の場合は元の名前を変更しない
         found = False
         for orig_path in keep_original_names.keys():
             orig_filename = os.path.basename(orig_path)
@@ -197,14 +195,14 @@ for root, dirs, files in os.walk(temp_folder):
             
             if orig_basename == current_basename:
                 dst = os.path.join(full_output_dir, filename)
-        shutil.copy2(src, dst)
+                shutil.copy2(src, dst)
                 print(f"出力完了 (元の名前を変更しない): {current_rel_path}")
                 found = True
                 break
                 
         if found:
-        continue
-    
+            continue
+        
         # 対応する階数情報を検索
         found = False
         for orig_path in processed_files.keys():
@@ -213,12 +211,12 @@ for root, dirs, files in os.walk(temp_folder):
             current_basename = os.path.splitext(filename)[0]
             
             if orig_basename == current_basename:
-    # 新しいファイル名を生成
+                # 新しいファイル名を生成
                 floor_number = processed_files[orig_path]
-    new_filename = f"FloorMap_{facility_id}_a{floor_number}_1.webp"
-    
+                new_filename = f"FloorMap_{facility_id}_a{floor_number}_1.webp"
+                
                 dst = os.path.join(full_output_dir, new_filename)
-    shutil.copy2(src, dst)
+                shutil.copy2(src, dst)
                 print(f"出力完了: {current_rel_path} -> {os.path.join(rel_output_dir, new_filename) if rel_output_dir else new_filename}")
                 found = True
                 break
