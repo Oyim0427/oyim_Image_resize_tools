@@ -47,7 +47,7 @@ for folder in [temp_folder, output_folder]:
 
 target_size = (750, 750)  # キャンパスサイズ
 background_color = (255, 255, 255)  # 背景は白
-content_target_size = 650  # 内容エリアの最大辺を650にリサイズ
+content_target_size = 700  # 内容エリアの最大辺を650にリサイズ
 
 # コマンド引数を入力（会場番号）
 if len(sys.argv) < 2:
