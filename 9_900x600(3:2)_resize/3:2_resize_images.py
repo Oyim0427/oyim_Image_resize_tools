@@ -81,22 +81,22 @@ def process_files_in_directory(input_dir, output_dir, relative_path=""):
         elif item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
             try:
                 img = Image.open(item_path).convert("RGB")
-
-    # 画像処理実行
-    processed = process_image(img)
+                
+                # 画像処理実行
+                processed = process_image(img)
 
                 # WebP形式で保存
-base_name = os.path.splitext(item)[0]
-output_filename = f"{base_name}.webp"
-output_path = os.path.join(current_output_dir, output_filename)
+                base_name = os.path.splitext(item)[0]
+                output_filename = f"{base_name}.webp"
+                output_path = os.path.join(current_output_dir, output_filename)
                 
                 # 画質を100%に設定して保存（無圧縮）
-processed.save(output_path, "WEBP", quality=100, lossless=True)
-print(f"⭕️処理完了: {os.path.join(relative_path, item)} -> {os.path.join(relative_path, output_filename)} ({processed.width}x{processed.height})")
-except Exception as e:
-print(f"エラー: ファイル {os.path.join(relative_path, item)} の処理中にエラーが発生しました: {e}")
+                processed.save(output_path, "WEBP", quality=100, lossless=True)
+                print(f"⭕️処理完了: {os.path.join(relative_path, item)} -> {os.path.join(relative_path, output_filename)} ({processed.width}x{processed.height})")
+            except Exception as e:
+                print(f"エラー: ファイル {os.path.join(relative_path, item)} の処理中にエラーが発生しました: {e}")
 
 # 画像処理を実行
 print("画像のリサイズとトリミングを開始...")
 process_files_in_directory(input_folder, output_folder)
-print("⭕️全画像の処理が完了し、WebP形式で2_output_imagesに出力しました！")
+print("処理が完了しました！")
